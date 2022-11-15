@@ -1,3 +1,5 @@
+const config = require("../config");
+
 const catchAsync = require("../utils/catchAsync");
 const articleDb = require("../use_cases/articles");
 
@@ -13,13 +15,27 @@ exports.addArticle = catchAsync(async (req, res, next) => {
 });
 
 exports.getArticles = catchAsync(async (req, res, next) => {
-  const query = { ...req.query };
-  const data = await articleDb.getArticles(query);
+  const {
+    page = 1,
+    limit = config.query.QUERY_LIMIT,
+    ...fields
+  } = { ...req.query };
+
+  let skip;
+  if (page == 1) {
+    skip = 0;
+  } else {
+    skip = Math.max(0, page);
+  }
+
+  const data = await articleDb.getArticles({ skip, limit, fields });
 
   const response = {
     success: true,
-    count: data.data.length,
-    ...data,
+    count: data.length,
+    page: parseInt(page),
+    perPage: parseInt(limit),
+    data,
   };
 
   res.status(200).json(response);

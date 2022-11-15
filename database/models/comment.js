@@ -1,5 +1,3 @@
-const mongoosePaginate = require("mongoose-paginate-v2");
-
 const mongoose = require("../connection");
 const { parseDate } = require("../../services/date");
 
@@ -24,8 +22,6 @@ const commentSchema = new Schema(
 
 commentSchema.set("toJSON", { virtuals: true });
 commentSchema.set("toObject", { virtuals: true });
-
-commentSchema.plugin(mongoosePaginate);
 
 commentSchema.pre(/^find/, function (next) {
   this.find({ deletedAt: { $exists: false } });

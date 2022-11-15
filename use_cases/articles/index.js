@@ -12,26 +12,19 @@ const addArticle = async (reqBody) => {
 };
 
 const getArticles = async (queryString) => {
-  const { page = 1, limit = config.query.QUERY_LIMIT, ...fields } = queryString;
+  const { skip, limit, ...fields } = queryString;
+
   const query = Object.create({});
   if (Object.keys(fields).length > 0) {
     for (const property in fields) {
-      query[property] = fields[property];
+      query[property] = {
+        $regex: fields[property],
+        $options: "i",
+      };
     }
   }
 
-  const customLabels = {
-    totalDocs: "totalCount",
-    docs: "data",
-    limit: "perPage",
-    page: "currentPage",
-  };
-
-  return await Article.paginate(query, {
-    page,
-    limit,
-    customLabels,
-  });
+  return await Article.find(query).limit(limit).skip(skip);
 };
 
 const updateArticle = async (articleId, reqBody) => {
