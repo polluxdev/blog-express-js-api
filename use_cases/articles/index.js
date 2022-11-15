@@ -1,4 +1,4 @@
-const config = require("../../config");
+const mongoose = require("mongoose");
 
 const Article = require("../../database/models/article");
 
@@ -47,9 +47,14 @@ const deleteArticle = async (articleId) => {
   );
 };
 
+const checkArticle = async (articleId) => {
+  return await Article.findById(mongoose.Types.ObjectId(articleId));
+};
+
 module.exports = {
   addArticle,
   getArticles,
   updateArticle,
   deleteArticle,
+  checkArticle,
 };

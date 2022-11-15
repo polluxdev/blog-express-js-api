@@ -1,4 +1,5 @@
 const config = require("../config");
+const AppError = require("../utils/appError");
 
 const catchAsync = require("../utils/catchAsync");
 const articleDb = require("../use_cases/articles");
@@ -42,6 +43,11 @@ exports.getArticles = catchAsync(async (req, res, next) => {
 });
 
 exports.updateArticle = catchAsync(async (req, res, next) => {
+  const article = await articleDb.checkArticle(req.params.id);
+  if (!article) {
+    throw new AppError("Article not found.", 404);
+  }
+
   const data = await articleDb.updateArticle(req.params.id, req.body);
 
   const response = {
@@ -53,6 +59,11 @@ exports.updateArticle = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteArticle = catchAsync(async (req, res, next) => {
+  const article = await articleDb.checkArticle(req.params.id);
+  if (!article) {
+    throw new AppError("Article not found.", 404);
+  }
+
   const data = await articleDb.deleteArticle(req.params.id);
 
   const response = {

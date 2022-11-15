@@ -2,7 +2,7 @@ const Comment = require("../../database/models/comment");
 
 const addComment = async (req) => {
   const newComment = {
-    articles: req.params.articleId,
+    article: req.params.articleId,
     body: req.body.body,
   };
 
@@ -33,9 +33,14 @@ const deleteComment = async (commentId) => {
   );
 };
 
+const checkComment = async (commentId) => {
+  return await Comment.findById(mongoose.Types.ObjectId(commentId));
+};
+
 module.exports = {
   addComment,
   getComment,
   updateComment,
   deleteComment,
+  checkComment,
 };
